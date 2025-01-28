@@ -2,8 +2,8 @@ from textnode import TextNode, TextType
 
 
 def main():
-    text_node = TextNode("This is a text node", TextType.BOLD_TEXT, "https://boot.dev")
-    print(text_node)
+    node = TextNode("This is a text node", TextType.BOLD_TEXT, "https://boot.dev")
+    print(node)
 
 
 if __name__ == "__main__":
