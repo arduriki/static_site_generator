@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -39,6 +39,41 @@ class TestHTMLNode(unittest.TestCase):
         child = HTMLNode(tag="span", value="child")
         node = HTMLNode(tag="div", children=[child], props={"class": "parent"})
         self.assertEqual(node.props_to_html(), 'class="parent"')
+
+
+class TestLeafNode(unittest.TestCase):
+    def test_leaf_node_with_tag(self):
+        node = LeafNode("p", "This is a paragraph of text")
+        self.assertEqual(node.to_html(), "<p>This is a paragraph of text</p>")
+
+    def test_leaf_node_with_tag_and_props(self):
+        node = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
+        self.assertEqual(
+            node.to_html(), '<a href="https://www.google.com">Click me!</a>'
+        )
+
+    def test_leaf_node_without_tag(self):
+        node = LeafNode(None, "Just some text")
+        self.assertEqual(node.to_html(), "Just some text")
+
+    def test_leaf_node_with_empty_props(self):
+        node = LeafNode("p", "Text with empty props", {})
+        self.assertEqual(node.to_html(), "<p>Text with empty props</p>")
+
+    def test_leaf_node_value_none(self):
+        with self.assertRaises(ValueError):
+            LeafNode("p", None)
+
+    def test_leaf_node_to_html_multiple_props(self):
+        node = LeafNode(
+            "a",
+            "Click me!",
+            {"href": "https://www.google.com", "target": "_blank", "class": "link"},
+        )
+        self.assertEqual(
+            node.to_html(),
+            '<a href="https://www.google.com" target="_blank" class="link">Click me!</a>',
+        )
 
 
 if __name__ == "__main__":
