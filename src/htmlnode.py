@@ -1,9 +1,4 @@
 class HTMLNode:
-    """
-    It represents a "node" in an HTML document tree
-    and is purpose-built to render itself as HTML.
-    """
-
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
@@ -16,17 +11,20 @@ class HTMLNode:
     def props_to_html(self):
         if self.props is None:
             return ""
-        return " ".join(map(lambda x: f'{x[0]}="{x[1]}"', self.props.items()))
+        return " ".join(f'{key}="{value}"' for key, value in self.props.items())
 
     def __repr__(self):
         return f"HTMLNode: tag: {self.tag}, value: {self.value}, children: {self.children}, props: {self.props}"
 
 
 class LeafNode(HTMLNode):
+    """
+    It represents a leaf node in an HTML document tree - one that can't have children
+    """
+
     def __init__(self, tag, value, props=None):
         if value is None:
             raise ValueError("LeafNode must have a value")
-
         super().__init__(tag, value, None, props)
 
     def to_html(self):
@@ -44,8 +42,7 @@ class LeafNode(HTMLNode):
 
 class ParentNode(HTMLNode):
     """Handles the nesting of HTML nodes inside of one another.
-    Any HTML node that's not a 'leaf' node is a 'parent' node.
-    Parent nodes must have a tag and children, while props are optional.
+    Any HTML node that's not a leaf node is a parent node.
     """
 
     def __init__(self, tag, children, props=None):
